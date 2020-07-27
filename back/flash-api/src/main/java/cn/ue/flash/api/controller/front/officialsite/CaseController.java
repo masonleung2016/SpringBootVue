@@ -31,30 +31,30 @@ import java.util.Map;
 @RestController
 @RequestMapping("/offcialsite/case")
 public class CaseController extends BaseController {
-    @Autowired
-    private BannerService bannerService;
-    @Autowired
-    private ArticleService articleService;
+  @Autowired
+  private BannerService bannerService;
+  @Autowired
+  private ArticleService articleService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public Object index() {
-        Map<String, Object> dataMap = new HashMap<>(2);
+  @RequestMapping(method = RequestMethod.GET)
+  public Object index() {
+    Map<String, Object> dataMap = new HashMap<>(2);
 
-        BannerVo banner = bannerService.queryBanner(BannerTypeEnum.CASE.getValue());
-        dataMap.put("banner", banner);
+    BannerVo banner = bannerService.queryBanner(BannerTypeEnum.CASE.getValue());
+    dataMap.put("banner", banner);
 
-        List<Product> products = new ArrayList<>();
-        Page<Article> articlePage = articleService.query(1, 10, ChannelEnum.PRODUCT.getId());
-        for (Article article : articlePage.getRecords()) {
-            products.add(new Product(article.getId(), article.getTitle(), article.getImg()));
-        }
-        dataMap.put("caseList", products);
-
-
-        Map map = new HashMap(1);
-
-        map.put("data", dataMap);
-        return Rets.success(map);
-
+    List<Product> products = new ArrayList<>();
+    Page<Article> articlePage = articleService.query(1, 10, ChannelEnum.PRODUCT.getId());
+    for (Article article : articlePage.getRecords()) {
+      products.add(new Product(article.getId(), article.getTitle(), article.getImg()));
     }
+    dataMap.put("caseList", products);
+
+
+    Map map = new HashMap(1);
+
+    map.put("data", dataMap);
+    return Rets.success(map);
+
+  }
 }

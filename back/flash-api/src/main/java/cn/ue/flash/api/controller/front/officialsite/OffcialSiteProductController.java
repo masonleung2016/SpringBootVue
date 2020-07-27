@@ -31,27 +31,27 @@ import java.util.Map;
 @RestController
 @RequestMapping("/offcialsite/product")
 public class OffcialSiteProductController extends BaseController {
-    @Autowired
-    private BannerService bannerService;
-    @Autowired
-    private ArticleService articleService;
+  @Autowired
+  private BannerService bannerService;
+  @Autowired
+  private ArticleService articleService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public Object index() {
-        Map<String, Object> dataMap = Maps.newHashMap();
+  @RequestMapping(method = RequestMethod.GET)
+  public Object index() {
+    Map<String, Object> dataMap = Maps.newHashMap();
 
-        BannerVo banner = bannerService.queryBanner(BannerTypeEnum.SOLUTION.getValue());
-        dataMap.put("banner", banner);
+    BannerVo banner = bannerService.queryBanner(BannerTypeEnum.SOLUTION.getValue());
+    dataMap.put("banner", banner);
 
-        List<Product> products = new ArrayList<>();
-        Page<Article> articlePage = articleService.query(1, 10, ChannelEnum.PRODUCT.getId());
-        for (Article article : articlePage.getRecords()) {
-            products.add(new Product(article.getId(), article.getTitle(), article.getImg()));
-        }
-        dataMap.put("productList", products);
-
-        Map map = Maps.newHashMap("data", dataMap);
-        return Rets.success(map);
-
+    List<Product> products = new ArrayList<>();
+    Page<Article> articlePage = articleService.query(1, 10, ChannelEnum.PRODUCT.getId());
+    for (Article article : articlePage.getRecords()) {
+      products.add(new Product(article.getId(), article.getTitle(), article.getImg()));
     }
+    dataMap.put("productList", products);
+
+    Map map = Maps.newHashMap("data", dataMap);
+    return Rets.success(map);
+
+  }
 }
