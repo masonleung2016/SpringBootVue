@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @Description: 系统监听器
- *               系统启动时加载全局参数(t_sys_cfg标中的数据)到缓存中
+ * 系统启动时加载全局参数(t_sys_cfg标中的数据)到缓存中
  * @Author: LCF
  * @Date: 2020/7/20 14:43
  * @Package: cn.ue.flash.core.listener
@@ -20,27 +20,51 @@ import org.springframework.stereotype.Component;
 @Component
 public class CacheListener implements CommandLineRunner {
 
-    @Autowired
-    private ConfigCache configCache;
-    @Autowired
-    private DictCache dictCache;
-    private Logger logger = LoggerFactory.getLogger(CacheListener.class);
+  @Autowired
+  private ConfigCache configCache;
+  @Autowired
+  private DictCache dictCache;
+  private Logger logger = LoggerFactory.getLogger(CacheListener.class);
 
-    public void loadCache() {
-        configCache.cache();
-        dictCache.cache();
-    }
+  public void loadCache() {
+    configCache.cache();
+    dictCache.cache();
+  }
 
-    @Override
-    public void run(String... strings) throws Exception {
-        logger.info(".....................load cache........................");
+  public ConfigCache getConfigCache() {
+    return configCache;
+  }
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                loadCache();
-            }
-        });
-        thread.start();
-    }
+  public void setConfigCache(ConfigCache configCache) {
+    this.configCache = configCache;
+  }
+
+  public DictCache getDictCache() {
+    return dictCache;
+  }
+
+  public void setDictCache(DictCache dictCache) {
+    this.dictCache = dictCache;
+  }
+
+  public Logger getLogger() {
+    return logger;
+  }
+
+  public void setLogger(Logger logger) {
+    this.logger = logger;
+  }
+
+  @Override
+  public void run(String... strings) throws Exception {
+    logger.info(".....................load cache........................");
+
+    Thread thread = new Thread(new Runnable() {
+      @Override
+      public void run() {
+        loadCache();
+      }
+    });
+    thread.start();
+  }
 }
