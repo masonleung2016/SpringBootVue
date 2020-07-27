@@ -10,10 +10,10 @@ package cn.ue.flash.bean.constant.cache;
 
 public interface Cache {
 
-    /**
-     * 常量缓存
-     */
-    String CONSTANT = "CONSTANT";
+  /**
+   * 常量缓存
+   */
+  String CONSTANT = "CONSTANT";
 
-    String APPLICATION = "APPLICATION";
+  String APPLICATION = "APPLICATION";
 }
