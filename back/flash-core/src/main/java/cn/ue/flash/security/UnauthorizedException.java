@@ -9,11 +9,11 @@ package cn.ue.flash.security;
  */
 
 public class UnauthorizedException extends RuntimeException {
-    public UnauthorizedException(String msg) {
-        super(msg);
-    }
+  public UnauthorizedException(String msg) {
+    super(msg);
+  }
 
-    public UnauthorizedException() {
-        super();
-    }
+  public UnauthorizedException() {
+    super();
+  }
 }
