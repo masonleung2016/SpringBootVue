@@ -27,23 +27,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/contacts")
 public class ContactsController extends BaseController {
-    @Autowired
-    private ContactsService contactsService;
+  @Autowired
+  private ContactsService contactsService;
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @RequiresPermissions(value = {Permission.CONTACTS})
-    public Object list(@RequestParam(required = false) String userName,
-                       @RequestParam(required = false) String mobile,
-                       @RequestParam(required = false) String startDate,
-                       @RequestParam(required = false) String endDate
+  @RequestMapping(value = "/list", method = RequestMethod.GET)
+  @RequiresPermissions(value = {Permission.CONTACTS})
+  public Object list(@RequestParam(required = false) String userName,
+                     @RequestParam(required = false) String mobile,
+                     @RequestParam(required = false) String startDate,
+                     @RequestParam(required = false) String endDate
 
-    ) {
-        Page<Contacts> page = new PageFactory<Contacts>().defaultPage();
-        page.addFilter("createTime", SearchFilter.Operator.GTE, DateUtil.parse(startDate, "yyyyMMddHHmmss"));
-        page.addFilter("createTime", SearchFilter.Operator.LTE, DateUtil.parse(endDate, "yyyyMMddHHmmss"));
-        page.addFilter("userName", SearchFilter.Operator.EQ, userName);
-        page.addFilter("mobile", SearchFilter.Operator.EQ, mobile);
-        page = contactsService.queryPage(page);
-        return Rets.success(page);
-    }
+  ) {
+    Page<Contacts> page = new PageFactory<Contacts>().defaultPage();
+    page.addFilter("createTime", SearchFilter.Operator.GTE, DateUtil.parse(startDate, "yyyyMMddHHmmss"));
+    page.addFilter("createTime", SearchFilter.Operator.LTE, DateUtil.parse(endDate, "yyyyMMddHHmmss"));
+    page.addFilter("userName", SearchFilter.Operator.EQ, userName);
+    page.addFilter("mobile", SearchFilter.Operator.EQ, mobile);
+    page = contactsService.queryPage(page);
+    return Rets.success(page);
+  }
 }

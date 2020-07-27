@@ -27,33 +27,33 @@ import java.util.List;
 @RestController
 @RequestMapping("/channel")
 public class ChannelMgrController extends BaseController {
-    @Autowired
-    private ChannelService channelService;
+  @Autowired
+  private ChannelService channelService;
 
-    @RequestMapping(method = RequestMethod.POST)
-    @BussinessLog(value = "编辑栏目", key = "name")
-    @RequiresPermissions(value = {Permission.CHANNEL_EDIT})
-    public Object save(@ModelAttribute @Valid Channel channel) {
-        if (channel.getId() == null) {
-            channelService.insert(channel);
-        } else {
-            channelService.update(channel);
-        }
-        return Rets.success();
+  @RequestMapping(method = RequestMethod.POST)
+  @BussinessLog(value = "编辑栏目", key = "name")
+  @RequiresPermissions(value = {Permission.CHANNEL_EDIT})
+  public Object save(@ModelAttribute @Valid Channel channel) {
+    if (channel.getId() == null) {
+      channelService.insert(channel);
+    } else {
+      channelService.update(channel);
     }
+    return Rets.success();
+  }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    @BussinessLog(value = "删除栏目", key = "id")
-    @RequiresPermissions(value = {Permission.CHANNEL_DEL})
-    public Object remove(Long id) {
-        channelService.delete(id);
-        return Rets.success();
-    }
+  @RequestMapping(method = RequestMethod.DELETE)
+  @BussinessLog(value = "删除栏目", key = "id")
+  @RequiresPermissions(value = {Permission.CHANNEL_DEL})
+  public Object remove(Long id) {
+    channelService.delete(id);
+    return Rets.success();
+  }
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @RequiresPermissions(value = {Permission.CHANNEL})
-    public Object list() {
-        List<Channel> list = channelService.queryAll();
-        return Rets.success(list);
-    }
+  @RequestMapping(value = "/list", method = RequestMethod.GET)
+  @RequiresPermissions(value = {Permission.CHANNEL})
+  public Object list() {
+    List<Channel> list = channelService.queryAll();
+    return Rets.success(list);
+  }
 }

@@ -28,18 +28,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/fileMgr")
 public class FileMgrController extends BaseController {
 
-    @Autowired
-    private FileService fileService;
+  @Autowired
+  private FileService fileService;
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @RequiresPermissions(value = {Permission.FILE})
-    public Object list(@RequestParam(required = false) String originalFileName
-    ) {
-        Page<FileInfo> page = new PageFactory<FileInfo>().defaultPage();
-        if (StringUtil.isNotEmpty(originalFileName)) {
-            page.addFilter(SearchFilter.build("originalFileName", SearchFilter.Operator.LIKE, originalFileName));
-        }
-        page = fileService.queryPage(page);
-        return Rets.success(page);
+  @RequestMapping(value = "/list", method = RequestMethod.GET)
+  @RequiresPermissions(value = {Permission.FILE})
+  public Object list(@RequestParam(required = false) String originalFileName
+  ) {
+    Page<FileInfo> page = new PageFactory<FileInfo>().defaultPage();
+    if (StringUtil.isNotEmpty(originalFileName)) {
+      page.addFilter(SearchFilter.build("originalFileName", SearchFilter.Operator.LIKE, originalFileName));
     }
+    page = fileService.queryPage(page);
+    return Rets.success(page);
+  }
 }
