@@ -19,271 +19,384 @@ import java.util.regex.Pattern;
  */
 
 public class ColumnDescriptor {
-    private static Map<String, Class<?>> typeMapping = new HashMap<String, Class<?>>();
-    private static Map<String, String> labelMapping = new HashMap<String, String>();
+  private static Map<String, Class<?>> typeMapping = new HashMap<String, Class<?>>();
+  private static Map<String, String> labelMapping = new HashMap<String, String>();
 
-    /**	private static Map<String, Class<?>> validationRules = new HashMap<String,Class<?>>();*/
+  /**
+   * private static Map<String, Class<?>> validationRules = new HashMap<String,Class<?>>();
+   */
 
-    private static Pattern COLUMN_TYPE_PATTERN = Pattern
-            .compile("^(\\w+)(?:\\((\\d+)\\))?");
-    private static Pattern ENUM_PATTERN = Pattern.compile("enum\\((.+)\\)");
+  private static Pattern COLUMN_TYPE_PATTERN = Pattern
+      .compile("^(\\w+)(?:\\((\\d+)\\))?");
+  private static Pattern ENUM_PATTERN = Pattern.compile("enum\\((.+)\\)");
 
-    static {
-        typeMapping.put("varchar", String.class);
-        typeMapping.put("enum", String.class);
-        typeMapping.put("bigint", Long.class);
-        typeMapping.put("long", Long.class);
-        typeMapping.put("integer", Integer.class);
-        typeMapping.put("float", Float.class);
-        typeMapping.put("double", Double.class);
-        typeMapping.put("int", Integer.class);
-        typeMapping.put("timestamp", Integer.class);
-        typeMapping.put("datetime", Integer.class);
-        typeMapping.put("boolean", boolean.class);
-        typeMapping.put("tinyint", boolean.class);
-        typeMapping.put("bool", boolean.class);
-        typeMapping.put("decimal", BigDecimal.class);
+  static {
+    typeMapping.put("varchar", String.class);
+    typeMapping.put("enum", String.class);
+    typeMapping.put("bigint", Long.class);
+    typeMapping.put("long", Long.class);
+    typeMapping.put("integer", Integer.class);
+    typeMapping.put("float", Float.class);
+    typeMapping.put("double", Double.class);
+    typeMapping.put("int", Integer.class);
+    typeMapping.put("timestamp", Integer.class);
+    typeMapping.put("datetime", Integer.class);
+    typeMapping.put("boolean", boolean.class);
+    typeMapping.put("tinyint", boolean.class);
+    typeMapping.put("bool", boolean.class);
+    typeMapping.put("decimal", BigDecimal.class);
+  }
+
+  static {
+
+  }
+
+  static {
+
+    labelMapping.put("id", "ID");
+    labelMapping.put("opAt", "操作时间");
+    labelMapping.put("opBy", "操作人");
+    labelMapping.put("delFlag", "删除标记");
+  }
+
+  public String columnName;
+  public boolean primary;
+  public String dataType;
+  public String columnType;
+  public int size;
+  public boolean nullable;
+  Pattern labelPattern = Pattern.compile("label:\\s*([^,;，]+)");
+  Pattern queryPattern = Pattern.compile("searchable:\\s*(\\w+)");
+  private String label;
+  private Object defaultValue;
+  private String comment;
+  private String fieldName;
+  private List<String> enumValues = new ArrayList<String>();
+  private List<Validation> validations = new ArrayList<Validation>();
+  private boolean validationBuilt = false;
+  private String queryOperator;
+
+  public static Map<String, Class<?>> getTypeMapping() {
+    return typeMapping;
+  }
+
+  public static void setTypeMapping(Map<String, Class<?>> typeMapping) {
+    ColumnDescriptor.typeMapping = typeMapping;
+  }
+
+  public static Map<String, String> getLabelMapping() {
+    return labelMapping;
+  }
+
+  public static void setLabelMapping(Map<String, String> labelMapping) {
+    ColumnDescriptor.labelMapping = labelMapping;
+  }
+
+  public static Pattern getColumnTypePattern() {
+    return COLUMN_TYPE_PATTERN;
+  }
+
+  public static void setColumnTypePattern(Pattern columnTypePattern) {
+    COLUMN_TYPE_PATTERN = columnTypePattern;
+  }
+
+  public static Pattern getEnumPattern() {
+    return ENUM_PATTERN;
+  }
+
+  public static void setEnumPattern(Pattern enumPattern) {
+    ENUM_PATTERN = enumPattern;
+  }
+
+  private boolean containsValidation(Class<?> klass) {
+    for (Validation v : validations) {
+      if (v.klass == klass) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean hasLabel() {
+    return label != null;
+  }
+
+  public String getLabel() {
+    if (label != null) {
+      return label;
+    }
+    String defaultLabel = labelMapping.get(columnName);
+    if (defaultLabel != null) {
+      return defaultLabel;
+    }
+    return label;
+  }
+
+  public void setLabel(String label) {
+    this.label = label;
+  }
+
+  public String getComment() {
+    return comment;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
+    if (comment == null) {
+      return;
     }
 
-    static {
+    extractLabel(comment);
+    extractSearchable(comment);
+  }
 
+  private void extractLabel(String comment) {
+    Matcher m = labelPattern.matcher(comment);
+    if (m.find()) {
+      this.label = m.group(1);
+    }
+  }
+
+  public String getQueryOperator() {
+    return queryOperator;
+  }
+
+  public void setQueryOperator(String queryOperator) {
+    this.queryOperator = queryOperator;
+  }
+
+  private void extractSearchable(String comment) {
+    // searchable: eq
+    Matcher m = queryPattern.matcher(comment);
+    if (m.find()) {
+      queryOperator = m.group(1);
+    }
+  }
+
+  public String getColumnName() {
+    return columnName;
+  }
+
+  public void setColumnName(String columnName) {
+    this.columnName = columnName;
+  }
+
+  public String getFieldName() {
+    if (Strings.isBlank(fieldName)) {
+      return Utils.lowerCamel(columnName);
+    }
+    return fieldName;
+  }
+
+  public void setFieldName(String fieldName) {
+    this.fieldName = fieldName;
+  }
+
+  public List<String> getEnumValues() {
+    return enumValues;
+  }
+
+  public void setEnumValues(List<String> enumValues) {
+    this.enumValues = enumValues;
+  }
+
+  public String getJavaType() {
+    if ("tinyint".equalsIgnoreCase(dataType) && size == 1) {
+      return boolean.class.getName();
+    }
+    if ("enum".equalsIgnoreCase(dataType)) {
+      return getUpperJavaFieldName();
+    }
+    Class<?> type = typeMapping.get(dataType);
+    if (type != null) {
+      return type.getName();
     }
 
-    static {
+    return String.class.getName();
+  }
 
-        labelMapping.put("id", "ID");
-        labelMapping.put("opAt", "操作时间");
-        labelMapping.put("opBy", "操作人");
-        labelMapping.put("delFlag", "删除标记");
-    }
+  public String getSimpleJavaTypeName() {
+    return getJavaType().replaceFirst("^.*\\.", "");
+  }
 
-    public String columnName;
-    public boolean primary;
-    public String dataType;
-    public String columnType;
-    public int size;
-    public boolean nullable;
-    Pattern labelPattern = Pattern.compile("label:\\s*([^,;，]+)");
-    Pattern queryPattern = Pattern.compile("searchable:\\s*(\\w+)");
-    private String label;
-    private Object defaultValue;
-    private String comment;
-    private String fieldName;
-    private List<String> enumValues = new ArrayList<String>();
-    private List<Validation> validations = new ArrayList<Validation>();
-    private boolean validationBuilt = false;
-    private String queryOperator;
+  public boolean isEnum() {
+    return "enum".equalsIgnoreCase(dataType);
+  }
 
-    private boolean containsValidation(Class<?> klass) {
-        for (Validation v : validations) {
-            if (v.klass == klass) {
-                return true;
-            }
-        }
-        return false;
-    }
+  public boolean isBoolean() {
+    return boolean.class.getName().equals(getJavaType());
+  }
 
-    public boolean hasLabel() {
-        return label != null;
-    }
+  public boolean isTimestamp() {
+    return "timestamp".equalsIgnoreCase(dataType);
+  }
 
-    public String getLabel() {
-        if (label != null) {
-            return label;
-        }
-        String defaultLabel = labelMapping.get(columnName);
-        if (defaultLabel != null) {
-            return defaultLabel;
-        }
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-        if (comment == null) {
-            return;
-        }
-
-        extractLabel(comment);
-        extractSearchable(comment);
-    }
-
-    private void extractLabel(String comment) {
-        Matcher m = labelPattern.matcher(comment);
-        if (m.find()) {
-            this.label = m.group(1);
-        }
-    }
-
-    public String getQueryOperator() {
-        return queryOperator;
-    }
-
-    private void extractSearchable(String comment) {
-        // searchable: eq
-        Matcher m = queryPattern.matcher(comment);
-        if (m.find()) {
-            queryOperator = m.group(1);
-        }
-    }
-
-    public String getColumnName() {
-        return columnName;
-    }
-
-    public String getFieldName() {
-        if (Strings.isBlank(fieldName)) {
-            return Utils.lowerCamel(columnName);
-        }
-        return fieldName;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public List<String> getEnumValues() {
-        return enumValues;
-    }
-
-    public void setColumnType(String columnType) {
-        Matcher m = ENUM_PATTERN.matcher(columnType);
-        if (m.find()) {
-            this.columnType = "enum";
-
-            String s = m.group(1);
-            for (String v : s.split(",")) {
-                v = v.trim().replaceAll("'", "");
-                enumValues.add(v);
-            }
-            return;
-        }
-
-        m = COLUMN_TYPE_PATTERN.matcher(columnType);
-        if (m.find()) {
-            if (m.group(2) != null) {
-                this.size = Integer.parseInt(m.group(2));
-            }
-            this.columnType = m.group(1);
-        } else {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    public String getJavaType() {
-        if ("tinyint".equalsIgnoreCase(dataType) && size == 1) {
-            return boolean.class.getName();
-        }
-        if ("enum".equalsIgnoreCase(dataType)) {
-            return getUpperJavaFieldName();
-        }
-        Class<?> type = typeMapping.get(dataType);
-        if (type != null) {
-            return type.getName();
-        }
-
-        return String.class.getName();
-    }
-
-    public String getSimpleJavaTypeName() {
-        return getJavaType().replaceFirst("^.*\\.", "");
-    }
-
-    public boolean isEnum() {
-        return "enum".equalsIgnoreCase(dataType);
-    }
-
-    public boolean isBoolean() {
-        return boolean.class.getName().equals(getJavaType());
-    }
-
-    public boolean isTimestamp() {
-        return "timestamp".equalsIgnoreCase(dataType);
-    }
-
-    public String getUpperJavaFieldName() {
-        return Utils.lowerCamel(columnName);
+  public String getUpperJavaFieldName() {
+    return Utils.lowerCamel(columnName);
 //		return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.upperCamel,
 //				columnName);
-    }
+  }
 
-    public String getGetterMethodName() {
-        if (isBoolean()) {
-            return "is" + getUpperJavaFieldName();
-        }
-        return "get" + getUpperJavaFieldName();
+  public String getGetterMethodName() {
+    if (isBoolean()) {
+      return "is" + getUpperJavaFieldName();
     }
+    return "get" + getUpperJavaFieldName();
+  }
 
-    public String getSetterMethodName() {
-        return "set" + getUpperJavaFieldName();
-    }
+  public String getSetterMethodName() {
+    return "set" + getUpperJavaFieldName();
+  }
 
-    public String getColumnAnnotation() {
-        if (primary) {
+  public String getColumnAnnotation() {
+    if (primary) {
 //			return "@Id";
-            return "@Name\r\n	@Prev(els = {@EL(\"uuid()\")})";
-        }
-        return "@Column";
+      return "@Name\r\n	@Prev(els = {@EL(\"uuid()\")})";
+    }
+    return "@Column";
+  }
+
+  public Object getDefaultValue() {
+    return defaultValue;
+  }
+
+  public void setDefaultValue(Object v) {
+    this.defaultValue = v;
+  }
+
+  public String getDefaultValueCode() {
+    if (isEnum()) {
+      return getSimpleJavaTypeName() + "." + defaultValue;
+    }
+    if (isBoolean()) {
+      if ("1".equals(defaultValue.toString())) {
+        return "true";
+      } else {
+        return "false";
+      }
+    }
+    if (isTimestamp()) {
+      if (("0000-00-00 00:00:00".equals(defaultValue) || "CURRENT_TIMESTAMP"
+          .equals(defaultValue))) {
+        return "DateTime.now()";
+      }
+    }
+    if (defaultValue != null && Long.class.getName().equals(getJavaType())) {
+      return defaultValue + "L";
+    }
+    if (defaultValue != null && BigDecimal.class.getName().equals(getJavaType())) {
+      return "new BigDecimal(\"" + defaultValue.toString() + "\")";
+    }
+    return "\"" + getDefaultValue().toString() + "\"";
+  }
+
+  public String getValidationFormClass() {
+    return "";
+  }
+
+  public boolean isPrimary() {
+    return primary;
+  }
+
+  public void setPrimary(boolean primary) {
+    this.primary = primary;
+  }
+
+  public String getDataType() {
+    return dataType;
+  }
+
+  public void setDataType(String dataType) {
+    this.dataType = dataType;
+  }
+
+  public String getColumnType() {
+    return columnType;
+  }
+
+  public void setColumnType(String columnType) {
+    Matcher m = ENUM_PATTERN.matcher(columnType);
+    if (m.find()) {
+      this.columnType = "enum";
+
+      String s = m.group(1);
+      for (String v : s.split(",")) {
+        v = v.trim().replaceAll("'", "");
+        enumValues.add(v);
+      }
+      return;
     }
 
-    public Object getDefaultValue() {
-        return defaultValue;
+    m = COLUMN_TYPE_PATTERN.matcher(columnType);
+    if (m.find()) {
+      if (m.group(2) != null) {
+        this.size = Integer.parseInt(m.group(2));
+      }
+      this.columnType = m.group(1);
+    } else {
+      throw new IllegalArgumentException();
+    }
+  }
+
+  public int getSize() {
+    return size;
+  }
+
+  public void setSize(int size) {
+    this.size = size;
+  }
+
+  public boolean isNullable() {
+    return nullable;
+  }
+
+  public void setNullable(boolean nullable) {
+    this.nullable = nullable;
+  }
+
+  public Pattern getLabelPattern() {
+    return labelPattern;
+  }
+
+  public void setLabelPattern(Pattern labelPattern) {
+    this.labelPattern = labelPattern;
+  }
+
+  public Pattern getQueryPattern() {
+    return queryPattern;
+  }
+
+  public void setQueryPattern(Pattern queryPattern) {
+    this.queryPattern = queryPattern;
+  }
+
+  public List<Validation> getValidations() {
+    return validations;
+  }
+
+  public void setValidations(List<Validation> validations) {
+    this.validations = validations;
+  }
+
+  public boolean isValidationBuilt() {
+    return validationBuilt;
+  }
+
+  public void setValidationBuilt(boolean validationBuilt) {
+    this.validationBuilt = validationBuilt;
+  }
+
+  public static class Validation {
+    public final Class<?> klass;
+    private final String annotation;
+
+    public Validation(Class<?> klass, String annotation) {
+      this.klass = klass;
+      this.annotation = annotation;
     }
 
-    public void setDefaultValue(Object v) {
-        this.defaultValue = v;
+    public String getAnnotation() {
+      return annotation;
     }
-
-    public String getDefaultValueCode() {
-        if (isEnum()) {
-            return getSimpleJavaTypeName() + "." + defaultValue;
-        }
-        if (isBoolean()) {
-            if ("1".equals(defaultValue.toString())) {
-                return "true";
-            } else {
-                return "false";
-            }
-        }
-        if (isTimestamp()) {
-            if (("0000-00-00 00:00:00".equals(defaultValue) || "CURRENT_TIMESTAMP"
-                    .equals(defaultValue))) {
-                return "DateTime.now()";
-            }
-        }
-        if (defaultValue != null && Long.class.getName().equals(getJavaType())) {
-            return defaultValue + "L";
-        }
-        if (defaultValue != null && BigDecimal.class.getName().equals(getJavaType())) {
-            return "new BigDecimal(\"" + defaultValue.toString() + "\")";
-        }
-        return "\"" + getDefaultValue().toString() + "\"";
-    }
-
-    public String getValidationFormClass() {
-        return "";
-    }
-
-    public static class Validation {
-        public final Class<?> klass;
-        private final String annotation;
-
-        public Validation(Class<?> klass, String annotation) {
-            this.klass = klass;
-            this.annotation = annotation;
-        }
-
-        public String getAnnotation() {
-            return annotation;
-        }
-    }
-
+  }
 }
