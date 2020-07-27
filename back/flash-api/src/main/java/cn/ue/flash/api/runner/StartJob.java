@@ -22,17 +22,17 @@ import java.util.List;
 @Component
 public class StartJob implements ApplicationRunner {
 
-    @Autowired
-    private JobService jobService;
+  @Autowired
+  private JobService jobService;
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+  private Logger log = LoggerFactory.getLogger(getClass());
 
-    @Override
-    public void run(ApplicationArguments applicationArguments) throws Exception {
-        log.info("start Job >>>>>>>>>>>>>>>>>>>>>>>");
-        List<QuartzJob> list = jobService.getTaskList();
-        for (QuartzJob quartzJob : list) {
-            jobService.addJob(quartzJob);
-        }
+  @Override
+  public void run(ApplicationArguments applicationArguments) throws Exception {
+    log.info("start Job >>>>>>>>>>>>>>>>>>>>>>>");
+    List<QuartzJob> list = jobService.getTaskList();
+    for (QuartzJob quartzJob : list) {
+      jobService.addJob(quartzJob);
     }
+  }
 }
