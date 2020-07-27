@@ -14,9 +14,9 @@ import java.util.List;
  */
 
 public interface ArticleRepository extends BaseRepository<Article, Long> {
-    /**
-     * @param idChannel
-     * @return
-     */
-    List<Article> findAllByIdChannel(Long idChannel);
+  /**
+   * @param idChannel
+   * @return
+   */
+  List<Article> findAllByIdChannel(Long idChannel);
 }

@@ -14,9 +14,9 @@ import java.util.List;
  */
 
 public interface BannerRepository extends BaseRepository<Banner, Long> {
-    /**
-     * @param type
-     * @return
-     */
-    List<Banner> findAllByType(String type);
+  /**
+   * @param type
+   * @return
+   */
+  List<Banner> findAllByType(String type);
 }

@@ -14,6 +14,6 @@ import java.util.List;
  */
 
 public interface NoticeRepository extends BaseRepository<Notice, Long> {
-    List<Notice> findByTitleLike(String name);
+  List<Notice> findByTitleLike(String name);
 }
 

@@ -15,10 +15,10 @@ import java.util.List;
 
 public interface TaskRepository extends BaseRepository<Task, Long> {
 
-    long countByNameLike(String name);
+  long countByNameLike(String name);
 
-    List<Task> findByNameLike(String name);
+  List<Task> findByNameLike(String name);
 
-    List<Task> findAllByDisabled(boolean disable);
+  List<Task> findAllByDisabled(boolean disable);
 }
 

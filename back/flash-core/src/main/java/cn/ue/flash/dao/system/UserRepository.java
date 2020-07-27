@@ -12,7 +12,7 @@ import cn.ue.flash.dao.BaseRepository;
  */
 
 public interface UserRepository extends BaseRepository<User, Long> {
-    User findByAccount(String account);
+  User findByAccount(String account);
 
-    User findByAccountAndStatusNot(String account, Integer status);
+  User findByAccountAndStatusNot(String account, Integer status);
 }

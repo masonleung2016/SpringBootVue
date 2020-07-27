@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 public interface MessagetemplateRepository extends BaseRepository<MessageTemplate, Long> {
-    MessageTemplate findByCode(String code);
+  MessageTemplate findByCode(String code);
 
-    List<MessageTemplate> findByIdMessageSender(Long idMessageSender);
+  List<MessageTemplate> findByIdMessageSender(Long idMessageSender);
 }

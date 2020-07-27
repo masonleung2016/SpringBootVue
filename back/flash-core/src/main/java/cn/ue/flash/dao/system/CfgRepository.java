@@ -13,6 +13,6 @@ import cn.ue.flash.dao.BaseRepository;
 
 public interface CfgRepository extends BaseRepository<Cfg, Long> {
 
-    Cfg findByCfgName(String cfgName);
+  Cfg findByCfgName(String cfgName);
 }
 

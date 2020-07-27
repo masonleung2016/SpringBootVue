@@ -13,8 +13,8 @@ import org.hibernate.dialect.MySQLStorageEngine;
  */
 
 public class MySQLDialect extends MySQL5Dialect {
-    @Override
-    protected MySQLStorageEngine getDefaultMySQLStorageEngine() {
-        return InnoDBStorageEngine.INSTANCE;
-    }
+  @Override
+  protected MySQLStorageEngine getDefaultMySQLStorageEngine() {
+    return InnoDBStorageEngine.INSTANCE;
+  }
 }
