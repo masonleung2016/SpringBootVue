@@ -16,19 +16,31 @@ import java.util.List;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TreeSelectNode {
-    private String id;
-    private String label;
-    private List<TreeSelectNode> children;
+  private String id;
+  private String label;
+  private List<TreeSelectNode> children;
 
-    public void setId(String code) {
+  public String getId() {
+    return id;
+  }
 
-    }
+  public void setId(String code) {
 
-    public void setLabel(String name) {
+  }
 
-    }
+  public String getLabel() {
+    return label;
+  }
 
-    public void setChildren(List<TreeSelectNode> children) {
+  public void setLabel(String name) {
 
-    }
+  }
+
+  public List<TreeSelectNode> getChildren() {
+    return children;
+  }
+
+  public void setChildren(List<TreeSelectNode> children) {
+
+  }
 }

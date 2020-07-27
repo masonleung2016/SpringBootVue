@@ -16,17 +16,17 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DeptNode extends Dept {
 
-    private List<DeptNode> children = null;
+  private List<DeptNode> children = null;
 
-    public List<DeptNode> getChildren() {
-        return children;
-    }
+  public List<DeptNode> getChildren() {
+    return children;
+  }
 
-    public void setChildren(List<DeptNode> children) {
-        this.children = children;
-    }
+  public void setChildren(List<DeptNode> children) {
+    this.children = children;
+  }
 
-    public String getLabel() {
-        return (String) getSimplename();
-    }
+  public String getLabel() {
+    return (String) getSimplename();
+  }
 }

@@ -9,34 +9,34 @@ package cn.ue.flash.bean.vo;
  */
 
 public class DictVo {
-    private String key;
-    private String value;
+  private String key;
+  private String value;
 
-    public DictVo() {
-    }
+  public DictVo() {
+  }
 
-    public DictVo(String key, String value) {
-        this.key = key;
-        this.value = value;
-    }
+  public DictVo(String key, String value) {
+    this.key = key;
+    this.value = value;
+  }
 
-    public DictVo(Object num, Object name) {
+  public DictVo(Object num, Object name) {
 
-    }
+  }
 
-    public String getKey() {
-        return key;
-    }
+  public String getKey() {
+    return key;
+  }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
+  public void setKey(String key) {
+    this.key = key;
+  }
 
-    public String getValue() {
-        return value;
-    }
+  public String getValue() {
+    return value;
+  }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+  public void setValue(String value) {
+    this.value = value;
+  }
 }

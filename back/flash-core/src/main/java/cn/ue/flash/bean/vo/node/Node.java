@@ -16,37 +16,49 @@ import java.util.List;
 
 @Data
 public class Node {
-    private Long id;
-    private Long pid;
-    private String name;
-    private Boolean checked;
-    private List<Node> children = new ArrayList<>(10);
+  private Long id;
+  private Long pid;
+  private String name;
+  private Boolean checked;
+  private List<Node> children = new ArrayList<>(10);
 
-    public void setId(Long id) {
+  public Number getPid() {
+    return null;
+  }
 
-    }
+  public void setPid(Long getpId) {
 
-    public void setName(String name) {
+  }
 
-    }
+  public Number getId() {
+    return null;
+  }
 
-    public void setPid(Long getpId) {
+  public void setId(Long id) {
 
-    }
+  }
 
-    public void setChecked(Boolean checked) {
+  public StringUtil getChildren() {
+    return null;
+  }
 
-    }
+  public void setChildren(List<Node> children) {
+    this.children = children;
+  }
 
-    public Number getPid() {
-        return null;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public Number getId() {
-        return null;
-    }
+  public void setName(String name) {
 
-    public StringUtil getChildren() {
-        return null;
-    }
+  }
+
+  public Boolean getChecked() {
+    return checked;
+  }
+
+  public void setChecked(Boolean checked) {
+
+  }
 }

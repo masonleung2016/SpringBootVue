@@ -15,57 +15,89 @@ import java.util.List;
 
 @Data
 public class RouterMenu {
-    private Long id;
-    private Long parentId;
-    private String path;
-    private String component;
-    private String name;
-    private Integer num;
-    private Boolean hidden = false;
-    private MenuMeta meta;
-    private List<RouterMenu> children = Lists.newArrayList();
+  private Long id;
+  private Long parentId;
+  private String path;
+  private String component;
+  private String name;
+  private Integer num;
+  private Boolean hidden = false;
+  private MenuMeta meta;
+  private List<RouterMenu> children = Lists.newArrayList();
 
-    public List<RouterMenu> getChildren() {
-        return children;
-    }
+  public List<RouterMenu> getChildren() {
+    return children;
+  }
 
-    public Number getParentId() {
-        return null;
-    }
+  public void setChildren(List<RouterMenu> children) {
+    this.children = children;
+  }
 
-    public void setParentId(Long valueOf) {
+  public Number getParentId() {
+    return null;
+  }
 
-    }
+  public void setParentId(Long valueOf) {
 
-    public void setPath(String valueOf) {
+  }
 
-    }
+  public int getNum() {
+    return 0;
+  }
 
-    public void setName(String valueOf) {
+  public void setNum(Integer valueOf) {
 
-    }
+  }
 
-    public void setComponent(String toString) {
+  public Long getId() {
+    return id;
+  }
 
-    }
+  public void setId(Long valueOf) {
 
-    public void setId(Long valueOf) {
+  }
 
-    }
+  public String getPath() {
+    return path;
+  }
 
-    public void setMeta(MenuMeta meta) {
+  public void setPath(String valueOf) {
 
-    }
+  }
 
-    public void setHidden(boolean b) {
+  public String getComponent() {
+    return component;
+  }
 
-    }
+  public void setComponent(String toString) {
 
-    public int getNum() {
-        return 0;
-    }
+  }
 
-    public void setNum(Integer valueOf) {
+  public String getName() {
+    return name;
+  }
 
-    }
+  public void setName(String valueOf) {
+
+  }
+
+  public Boolean getHidden() {
+    return hidden;
+  }
+
+  public void setHidden(boolean b) {
+
+  }
+
+  public void setHidden(Boolean hidden) {
+    this.hidden = hidden;
+  }
+
+  public MenuMeta getMeta() {
+    return meta;
+  }
+
+  public void setMeta(MenuMeta meta) {
+
+  }
 }

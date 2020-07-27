@@ -12,38 +12,54 @@ import lombok.Data;
 
 @Data
 public class News {
-    /**
-     * 资讯标题
-     */
-    private String desc;
-    /**
-     * 详情链接
-     */
-    private String url;
-    /**
-     * 图片地址
-     */
-    private String src;
+  /**
+   * 资讯标题
+   */
+  private String desc;
+  /**
+   * 详情链接
+   */
+  private String url;
+  /**
+   * 图片地址
+   */
+  private String src;
 
-    public News() {
+  public News() {
 
-    }
+  }
 
-    public News(String desc, String url, String src) {
-        this.desc = desc;
-        this.url = url;
-        this.src = src;
-    }
+  public News(String desc, String url, String src) {
+    this.desc = desc;
+    this.url = url;
+    this.src = src;
+  }
 
-    public void setDesc(Object title) {
+  public String getDesc() {
+    return desc;
+  }
 
-    }
+  public void setDesc(Object title) {
 
-    public void setUrl(String s) {
+  }
 
-    }
+  public void setDesc(String desc) {
+    this.desc = desc;
+  }
 
-    public void setSrc(String s) {
+  public String getUrl() {
+    return url;
+  }
 
-    }
+  public void setUrl(String s) {
+
+  }
+
+  public String getSrc() {
+    return src;
+  }
+
+  public void setSrc(String s) {
+
+  }
 }

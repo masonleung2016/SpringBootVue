@@ -15,14 +15,26 @@ import java.util.List;
 
 @Data
 public class BannerVo {
-    private Integer index = 0;
-    private List<Banner> list;
+  private Integer index = 0;
+  private List<Banner> list;
 
-    public void setIndex(int i) {
+  public Integer getIndex() {
+    return index;
+  }
 
-    }
+  public void setIndex(int i) {
 
-    public void setList(List<Banner> bannerList) {
+  }
 
-    }
+  public void setIndex(Integer index) {
+    this.index = index;
+  }
+
+  public List<Banner> getList() {
+    return list;
+  }
+
+  public void setList(List<Banner> bannerList) {
+
+  }
 }

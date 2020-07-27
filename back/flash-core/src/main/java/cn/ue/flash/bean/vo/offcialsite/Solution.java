@@ -13,33 +13,53 @@ import lombok.Data;
 @Data
 public class Solution {
 
-    private Long id;
-    private String name;
-    private String img;
+  private Long id;
+  private String name;
+  private String img;
 
-    public Solution() {
+  public Solution() {
 
-    }
+  }
 
-    public Solution(Long id, String name, String img) {
-        this.id = id;
-        this.name = name;
-        this.img = img;
-    }
+  public Solution(Long id, String name, String img) {
+    this.id = id;
+    this.name = name;
+    this.img = img;
+  }
 
-    public Solution(Long id, Object title, Object img) {
+  public Solution(Long id, Object title, Object img) {
 
-    }
+  }
 
-    public void setId(Long id) {
+  public Long getId() {
+    return id;
+  }
 
-    }
+  public void setId(Long id) {
 
-    public void setName(Object title) {
+  }
 
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setImg(Object img) {
+  public void setName(Object title) {
 
-    }
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getImg() {
+    return img;
+  }
+
+  public void setImg(Object img) {
+
+  }
+
+  public void setImg(String img) {
+    this.img = img;
+  }
 }

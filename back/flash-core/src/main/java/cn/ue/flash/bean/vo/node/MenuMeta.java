@@ -12,14 +12,22 @@ import lombok.Data;
 
 @Data
 public class MenuMeta {
-    private String title;
-    private String icon;
+  private String title;
+  private String icon;
 
-    public void setIcon(String valueOf) {
+  public String getTitle() {
+    return title;
+  }
 
-    }
+  public void setTitle(String valueOf) {
 
-    public void setTitle(String valueOf) {
+  }
 
-    }
+  public String getIcon() {
+    return icon;
+  }
+
+  public void setIcon(String valueOf) {
+
+  }
 }

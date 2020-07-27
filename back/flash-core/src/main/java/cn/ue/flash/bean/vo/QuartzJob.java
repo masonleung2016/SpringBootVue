@@ -18,92 +18,124 @@ import java.util.Map;
 @Getter
 @Setter
 public class QuartzJob implements Serializable {
-    private String jobId;
-    private String jobName;
-    private String jobGroup;
-    private String jobClass;
-    private String description;
-    private String cronExpression;
-    private boolean concurrent;
-    private String jobStatus;
-    private Date nextTime;
-    private Date previousTime;
-    private boolean disabled;
-    private Map<String, Object> dataMap;
+  private String jobId;
+  private String jobName;
+  private String jobGroup;
+  private String jobClass;
+  private String description;
+  private String cronExpression;
+  private boolean concurrent;
+  private String jobStatus;
+  private Date nextTime;
+  private Date previousTime;
+  private boolean disabled;
+  private Map<String, Object> dataMap;
 
-    public Map getDataMap() {
-        return null;
-    }
+  public Map getDataMap() {
+    return null;
+  }
 
-    public String getJobName() {
-        return null;
-    }
+  public void setDataMap(Map<String, Object> dataMap) {
 
-    public void setJobName(String jobName) {
+  }
 
-    }
+  public String getJobName() {
+    return null;
+  }
 
-    public void setJobGroup(String jobGroup) {
+  public void setJobName(String jobName) {
 
-    }
+  }
 
-    public void setDescription(String s) {
+  public Object getDescription() {
+    return null;
+  }
 
-    }
+  public void setDescription(String s) {
 
-    public void setNextTime(Date nextFireTime) {
+  }
 
-    }
+  public boolean isDisabled() {
+    return false;
+  }
 
-    public void setPreviousTime(Date previousFireTime) {
+  public void setDisabled(Object disabled) {
 
-    }
+  }
 
-    public void setJobStatus(String name) {
+  public void setDisabled(boolean disabled) {
+    this.disabled = disabled;
+  }
 
-    }
+  public String getCronExpression() {
+    return null;
+  }
 
-    public void setCronExpression(String cronExpression) {
+  public void setCronExpression(String cronExpression) {
 
-    }
+  }
 
-    public void setConcurrent(Object concurrent) {
+  public String getJobGroup() {
+    return null;
+  }
 
-    }
+  public void setJobGroup(String jobGroup) {
 
-    public void setJobClass(Object jobClass) {
+  }
 
-    }
+  public boolean isConcurrent() {
+    return false;
+  }
 
-    public void setDisabled(Object disabled) {
+  public void setConcurrent(Object concurrent) {
 
-    }
+  }
 
-    public void setDataMap(Map<String, Object> dataMap) {
+  public void setConcurrent(boolean concurrent) {
+    this.concurrent = concurrent;
+  }
 
-    }
+  public String getJobClass() {
+    return null;
+  }
 
-    public Object getDescription() {
-        return null;
-    }
+  public void setJobClass(Object jobClass) {
 
-    public boolean isDisabled() {
-        return false;
-    }
+  }
 
-    public String getCronExpression() {
-        return null;
-    }
+  public void setJobClass(String jobClass) {
+    this.jobClass = jobClass;
+  }
 
-    public String getJobGroup() {
-        return null;
-    }
+  public String getJobId() {
+    return jobId;
+  }
 
-    public boolean isConcurrent() {
-        return false;
-    }
+  public void setJobId(String jobId) {
+    this.jobId = jobId;
+  }
 
-    public String getJobClass() {
-        return null;
-    }
+  public String getJobStatus() {
+    return jobStatus;
+  }
+
+  public void setJobStatus(String name) {
+
+  }
+
+  public Date getNextTime() {
+    return nextTime;
+  }
+
+  public void setNextTime(Date nextFireTime) {
+
+  }
+
+  public Date getPreviousTime() {
+    return previousTime;
+  }
+
+  public void setPreviousTime(Date previousFireTime) {
+
+  }
 }
