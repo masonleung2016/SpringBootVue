@@ -10,25 +10,33 @@ package cn.ue.flash.bean.enumeration.cms;
 
 public enum ChannelEnum {
 
-    CASE(4L, "case"),
-    NEWS(1L, "news"),
-    PRODUCT(2L, "product"),
-    SOLUTION(3L, "solution");
+  CASE(4L, "case"),
+  NEWS(1L, "news"),
+  PRODUCT(2L, "product"),
+  SOLUTION(3L, "solution");
 
 
-    private String value;
-    private Long id;
+  private String value;
+  private Long id;
 
-    ChannelEnum(Long id, String value) {
-        this.id = id;
-        this.value = value;
-    }
+  ChannelEnum(Long id, String value) {
+    this.id = id;
+    this.value = value;
+  }
 
-    public String getValue() {
-        return value;
-    }
+  public String getValue() {
+    return value;
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public void setValue(String value) {
+    this.value = value;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
 }

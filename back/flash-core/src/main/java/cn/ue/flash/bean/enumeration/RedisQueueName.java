@@ -9,19 +9,19 @@ package cn.ue.flash.bean.enumeration;
  */
 
 public enum RedisQueueName {
-    CREDIT_LIMIT("credit_limit"), COLLECTION_TAG("collection_tag");
+  CREDIT_LIMIT("credit_limit"), COLLECTION_TAG("collection_tag");
 
-    private String value;
+  private String value;
 
-    RedisQueueName(String value) {
-        this.value = value;
-    }
+  RedisQueueName(String value) {
+    this.value = value;
+  }
 
-    public String getValue() {
-        return value;
-    }
+  public String getValue() {
+    return value;
+  }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+  public void setValue(String value) {
+    this.value = value;
+  }
 }

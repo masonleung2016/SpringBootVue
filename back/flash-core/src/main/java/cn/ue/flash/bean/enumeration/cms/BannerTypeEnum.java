@@ -10,19 +10,23 @@ package cn.ue.flash.bean.enumeration.cms;
 
 public enum BannerTypeEnum {
 
-    CASE("case"),
-    INDEX("index"),
-    NEWS("news"),
-    PRODUCT("product"),
-    SOLUTION("solution");
+  CASE("case"),
+  INDEX("index"),
+  NEWS("news"),
+  PRODUCT("product"),
+  SOLUTION("solution");
 
-    private String value;
+  private String value;
 
-    BannerTypeEnum(String value) {
-        this.value = value;
-    }
+  BannerTypeEnum(String value) {
+    this.value = value;
+  }
 
-    public String getValue() {
-        return value;
-    }
+  public String getValue() {
+    return value;
+  }
+
+  public void setValue(String value) {
+    this.value = value;
+  }
 }

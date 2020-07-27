@@ -10,17 +10,21 @@ package cn.ue.flash.bean.enumeration;
 
 public enum ProjectEnum {
 
-    DOLPHIN_PROD("dolphin"),
-    SCORE_CARD("ScoreCard"),
-    SNOW_PRODUCT("PRJ_SNOW_PRODUCT");
+  DOLPHIN_PROD("dolphin"),
+  SCORE_CARD("ScoreCard"),
+  SNOW_PRODUCT("PRJ_SNOW_PRODUCT");
 
-    private String value;
+  private String value;
 
-    ProjectEnum(String value) {
-        this.value = value;
-    }
+  ProjectEnum(String value) {
+    this.value = value;
+  }
 
-    public String getValue() {
-        return value;
-    }
+  public String getValue() {
+    return value;
+  }
+
+  public void setValue(String value) {
+    this.value = value;
+  }
 }
