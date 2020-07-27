@@ -12,29 +12,37 @@ import java.util.Map;
  */
 
 public enum BasicType {
-    BOOLEAN, BYTE, CHAR, CHARACTER, DOUBLE, FLOAT, INT, INTEGER, LONG, SHORT, STRING;
+  BOOLEAN, BYTE, CHAR, CHARACTER, DOUBLE, FLOAT, INT, INTEGER, LONG, SHORT, STRING;
 
-    /**
-     * 原始类型为Key，包装类型为Value，例如： int.class -> Integer.class.
-     */
-    public static final Map<Class<?>, Class<?>> WRAPPER_PRIMITIVE_MAP = new HashMap<Class<?>, Class<?>>(8);
-    /**
-     * 包装类型为Key，原始类型为Value，例如： Integer.class -> int.class.
-     */
-    public static final Map<Class<?>, Class<?>> PRIMITIVE_WRAPPER_MAP = new HashMap<Class<?>, Class<?>>(8);
+  /**
+   * 原始类型为Key，包装类型为Value，例如： int.class -> Integer.class.
+   */
+  public static final Map<Class<?>, Class<?>> WRAPPER_PRIMITIVE_MAP = new HashMap<Class<?>, Class<?>>(8);
+  /**
+   * 包装类型为Key，原始类型为Value，例如： Integer.class -> int.class.
+   */
+  public static final Map<Class<?>, Class<?>> PRIMITIVE_WRAPPER_MAP = new HashMap<Class<?>, Class<?>>(8);
 
-    static {
-        WRAPPER_PRIMITIVE_MAP.put(Boolean.class, boolean.class);
-        WRAPPER_PRIMITIVE_MAP.put(Byte.class, byte.class);
-        WRAPPER_PRIMITIVE_MAP.put(Character.class, char.class);
-        WRAPPER_PRIMITIVE_MAP.put(Double.class, double.class);
-        WRAPPER_PRIMITIVE_MAP.put(Float.class, float.class);
-        WRAPPER_PRIMITIVE_MAP.put(Integer.class, int.class);
-        WRAPPER_PRIMITIVE_MAP.put(Long.class, long.class);
-        WRAPPER_PRIMITIVE_MAP.put(Short.class, short.class);
+  static {
+    WRAPPER_PRIMITIVE_MAP.put(Boolean.class, boolean.class);
+    WRAPPER_PRIMITIVE_MAP.put(Byte.class, byte.class);
+    WRAPPER_PRIMITIVE_MAP.put(Character.class, char.class);
+    WRAPPER_PRIMITIVE_MAP.put(Double.class, double.class);
+    WRAPPER_PRIMITIVE_MAP.put(Float.class, float.class);
+    WRAPPER_PRIMITIVE_MAP.put(Integer.class, int.class);
+    WRAPPER_PRIMITIVE_MAP.put(Long.class, long.class);
+    WRAPPER_PRIMITIVE_MAP.put(Short.class, short.class);
 
-        for (Map.Entry<Class<?>, Class<?>> entry : WRAPPER_PRIMITIVE_MAP.entrySet()) {
-            PRIMITIVE_WRAPPER_MAP.put(entry.getValue(), entry.getKey());
-        }
+    for (Map.Entry<Class<?>, Class<?>> entry : WRAPPER_PRIMITIVE_MAP.entrySet()) {
+      PRIMITIVE_WRAPPER_MAP.put(entry.getValue(), entry.getKey());
     }
+  }
+
+  public static Map<Class<?>, Class<?>> getWrapperPrimitiveMap() {
+    return WRAPPER_PRIMITIVE_MAP;
+  }
+
+  public static Map<Class<?>, Class<?>> getPrimitiveWrapperMap() {
+    return PRIMITIVE_WRAPPER_MAP;
+  }
 }

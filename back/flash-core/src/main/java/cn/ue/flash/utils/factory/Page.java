@@ -18,226 +18,228 @@ import java.util.List;
 
 public class Page<T> {
 
-    private Sort sort;
-    /**
-     * 该操作只是为了忽略RowBounds属性
-     */
-    private transient int offset;
-    /**
-     * 该操作只是为了忽略RowBounds属性
-     */
-    private transient int limit;
+  private Sort sort;
+  /**
+   * 该操作只是为了忽略RowBounds属性
+   */
+  private transient int offset;
+  /**
+   * 该操作只是为了忽略RowBounds属性
+   */
+  private transient int limit;
 
-    /**
-     * 总数
-     */
-    private int total;
+  /**
+   * 总数
+   */
+  private int total;
 
-    /**
-     * 每页显示条数，默认 10
-     */
-    private int size = 10;
+  /**
+   * 每页显示条数，默认 10
+   */
+  private int size = 10;
 
-    /**
-     * 总页数
-     */
-    private int pages;
+  /**
+   * 总页数
+   */
+  private int pages;
 
-    /**
-     * 当前页
-     */
-    private int current = 1;
+  /**
+   * 当前页
+   */
+  private int current = 1;
 
-    /**
-     * 查询总记录数（默认 true）
-     */
-    private transient boolean searchCount = true;
+  /**
+   * 查询总记录数（默认 true）
+   */
+  private transient boolean searchCount = true;
 
-    /**
-     * 查询数据列表
-     */
-    private List<T> records = Collections.emptyList();
+  /**
+   * 查询数据列表
+   */
+  private List<T> records = Collections.emptyList();
 
-    private transient List<SearchFilter> filters;
+  private transient List<SearchFilter> filters;
 
-    public Page() {
+  public Page() {
 
+  }
+
+  public Page(int current, int size, String orderByField) {
+    this(current, size, orderByField, true);
+
+
+  }
+
+  public Page(int current, int size, String orderByField, boolean isAsc) {
+    this(current, size);
+    setSort(Sort.by(isAsc ? Sort.Direction.ASC : Sort.Direction.DESC, orderByField));
+
+  }
+
+  /**
+   * 分页构造函数
+   *
+   * @param current 当前页
+   * @param size    每页显示条数
+   */
+  public Page(int current, int size) {
+    this(current, size, true);
+  }
+
+
+  public Page(int current, int size, boolean searchCount) {
+
+    setOffset(offsetCurrent(current, size));
+    setLimit(size);
+    if (current > 1) {
+      this.current = current;
     }
+    this.size = size;
+    this.searchCount = searchCount;
+  }
 
-    public Page(int current, int size, String orderByField) {
-        this(current, size, orderByField, true);
-
-
+  protected static int offsetCurrent(int current, int size) {
+    if (current > 0) {
+      return (current - 1) * size;
     }
+    return 0;
+  }
 
-    public Page(int current, int size, String orderByField, boolean isAsc) {
-        this(current, size);
-        setSort(Sort.by(isAsc ? Sort.Direction.ASC : Sort.Direction.DESC, orderByField));
+  public Sort getSort() {
+    return sort;
+  }
 
+  public void setSort(Sort sort) {
+    this.sort = sort;
+  }
+
+  public int offsetCurrent() {
+    return offsetCurrent(this.current, this.size);
+  }
+
+  public boolean hasPrevious() {
+    return this.current > 1;
+  }
+
+  public boolean hasNext() {
+    return this.current < this.pages;
+  }
+
+  public int getTotal() {
+    return total;
+  }
+
+  public Page setTotal(int total) {
+    this.total = total;
+    return this;
+  }
+
+  public int getSize() {
+    return size;
+  }
+
+  public Page setSize(int size) {
+    this.size = size;
+    return this;
+  }
+
+  public int getPages() {
+    if (this.size == 0) {
+      return 0;
     }
-
-    /**
-     * 分页构造函数
-     * @param current 当前页
-     * @param size    每页显示条数
-     */
-    public Page(int current, int size) {
-        this(current, size, true);
+    this.pages = this.total / this.size;
+    if (this.total % this.size != 0) {
+      this.pages++;
     }
+    return this.pages;
+  }
 
+  public void setPages(int pages) {
+    this.pages = pages;
+  }
 
-    public Page(int current, int size, boolean searchCount) {
+  public int getCurrent() {
+    return current;
+  }
 
-        setOffset(offsetCurrent(current, size));
-        setLimit(size);
-        if (current > 1) {
-            this.current = current;
-        }
-        this.size = size;
-        this.searchCount = searchCount;
+  public Page setCurrent(int current) {
+    this.current = current;
+    return this;
+  }
+
+  public boolean isSearchCount() {
+    return searchCount;
+  }
+
+  public Page setSearchCount(boolean searchCount) {
+    this.searchCount = searchCount;
+    return this;
+  }
+
+  public int getOffset() {
+    return offset;
+  }
+
+  public Page setOffset(int offset) {
+    this.offset = offset;
+    return this;
+  }
+
+  public int getLimit() {
+    return limit;
+  }
+
+  public Page setLimit(int limit) {
+    this.limit = limit;
+    return this;
+  }
+
+  public List<T> getRecords() {
+    return records;
+  }
+
+  public Page<T> setRecords(List<T> records) {
+    this.records = records;
+    return this;
+  }
+
+  public List<SearchFilter> getFilters() {
+    return filters;
+  }
+
+  public void setFilters(List<SearchFilter> filters) {
+    this.filters = filters;
+  }
+
+  public void addFilter(SearchFilter filter) {
+    if (filter == null) {
+      return;
     }
-
-    protected static int offsetCurrent(int current, int size) {
-        if (current > 0) {
-            return (current - 1) * size;
-        }
-        return 0;
+    if (filters == null) {
+      filters = Lists.newArrayList();
     }
+    filters.add(filter);
+  }
 
-    public Sort getSort() {
-        return sort;
+  public void addFilter(String fieldName, SearchFilter.Operator operator, Object value) {
+    if (!StringUtil.isNullOrEmpty(value)) {
+      addFilter(SearchFilter.build(fieldName, operator, value));
     }
+  }
 
-    public void setSort(Sort sort) {
-        this.sort = sort;
+  public void addFilter(String fieldName, Object val) {
+    addFilter(fieldName, SearchFilter.Operator.EQ, val);
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder pg = new StringBuilder();
+    pg.append(" Page:{ [").append(super.toString()).append("], ");
+    if (records != null) {
+      pg.append("records-size:").append(records.size());
+    } else {
+      pg.append("records is null");
     }
-
-    public int offsetCurrent() {
-        return offsetCurrent(this.current, this.size);
-    }
-
-    public boolean hasPrevious() {
-        return this.current > 1;
-    }
-
-    public boolean hasNext() {
-        return this.current < this.pages;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public Page setTotal(int total) {
-        this.total = total;
-        return this;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public Page setSize(int size) {
-        this.size = size;
-        return this;
-    }
-
-    public int getPages() {
-        if (this.size == 0) {
-            return 0;
-        }
-        this.pages = this.total / this.size;
-        if (this.total % this.size != 0) {
-            this.pages++;
-        }
-        return this.pages;
-    }
-
-    public int getCurrent() {
-        return current;
-    }
-
-    public Page setCurrent(int current) {
-        this.current = current;
-        return this;
-    }
-
-    public boolean isSearchCount() {
-        return searchCount;
-    }
-
-    public Page setSearchCount(boolean searchCount) {
-        this.searchCount = searchCount;
-        return this;
-    }
-
-    public int getOffset() {
-        return offset;
-    }
-
-    public Page setOffset(int offset) {
-        this.offset = offset;
-        return this;
-    }
-
-    public int getLimit() {
-        return limit;
-    }
-
-    public Page setLimit(int limit) {
-        this.limit = limit;
-        return this;
-    }
-
-
-    public List<T> getRecords() {
-        return records;
-    }
-
-    public Page<T> setRecords(List<T> records) {
-        this.records = records;
-        return this;
-    }
-
-
-    public List<SearchFilter> getFilters() {
-        return filters;
-    }
-
-    public void setFilters(List<SearchFilter> filters) {
-        this.filters = filters;
-    }
-
-    public void addFilter(SearchFilter filter) {
-        if (filter == null) {
-            return;
-        }
-        if (filters == null) {
-            filters = Lists.newArrayList();
-        }
-        filters.add(filter);
-    }
-
-    public void addFilter(String fieldName, SearchFilter.Operator operator, Object value) {
-        if (!StringUtil.isNullOrEmpty(value)) {
-            addFilter(SearchFilter.build(fieldName, operator, value));
-        }
-    }
-
-    public void addFilter(String fieldName, Object val) {
-        addFilter(fieldName, SearchFilter.Operator.EQ, val);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder pg = new StringBuilder();
-        pg.append(" Page:{ [").append(super.toString()).append("], ");
-        if (records != null) {
-            pg.append("records-size:").append(records.size());
-        } else {
-            pg.append("records is null");
-        }
-        return pg.append(" }").toString();
-    }
-
+    return pg.append(" }").toString();
+  }
 }
