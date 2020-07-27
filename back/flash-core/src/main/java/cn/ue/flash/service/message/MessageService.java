@@ -34,153 +34,185 @@ import java.util.*;
 
 @Service
 public class MessageService extends BaseService<Message, Long, MessageRepository> {
-    private Logger logger = LoggerFactory.getLogger(getClass());
-    @Autowired
-    private MessageRepository messageRepository;
-    @Autowired
-    private MessagesenderRepository messagesenderRepository;
-    @Autowired
-    private MessagetemplateRepository messagetemplateRepository;
+  private Logger logger = LoggerFactory.getLogger(getClass());
+  @Autowired
+  private MessageRepository messageRepository;
+  @Autowired
+  private MessagesenderRepository messagesenderRepository;
+  @Autowired
+  private MessagetemplateRepository messagetemplateRepository;
 
 
-    public boolean delete(String ids) {
-        final ArrayList<String> list = Lists.newArrayList(Splitter.on(',').split(ids));
-        messageRepository.deleteAllByIdIn(list);
-        return true;
+  public boolean delete(String ids) {
+    final ArrayList<String> list = Lists.newArrayList(Splitter.on(',').split(ids));
+    messageRepository.deleteAllByIdIn(list);
+    return true;
+  }
+
+  public void sendTplEmail(String tplCode, String from, String to, String cc, String title, Map<String, Object> dataMap) {
+    MessageTemplate messageTemplate = messagetemplateRepository.findByCode(tplCode);
+    String content = getContent(messageTemplate.getContent(), dataMap);
+    sendEmailMessage(tplCode, from, to, cc, title, content, messageTemplate, null, null);
+  }
+
+  public void sendTplEmail(String tplCode, String from, String to, String cc, String title,
+                           String attachmentFilename, InputStreamSource inputStreamSource,
+                           Map<String, Object> dataMap) {
+    MessageTemplate messageTemplate = messagetemplateRepository.findByCode(tplCode);
+    String content = getContent(messageTemplate.getContent(), dataMap);
+    sendEmailMessage(tplCode, from, to, cc, title, content, messageTemplate, attachmentFilename, inputStreamSource);
+  }
+
+  public void sendSimpleEmail(String tplCode, String from, String to, String cc, String title, String... args) {
+    MessageTemplate messageTemplate = messagetemplateRepository.findByCode(tplCode);
+    String content = getContent(messageTemplate.getContent(), args);
+    sendEmailMessage(tplCode, from, to, cc, title, content, messageTemplate, null, null);
+  }
+
+  public void sendSms(String tplCode, String receiver, String... args) {
+    MessageTemplate messageTemplate = messagetemplateRepository.findByCode(tplCode);
+    String content = getContent(messageTemplate.getContent(), args);
+    boolean isSuccess = false;
+    try {
+      isSuccess = this.sendSmsMessage(receiver, content, messageTemplate, args);
+    } catch (Exception e) {
+      logger.error(e.getMessage(), e);
     }
+    saveMessage(0, tplCode, receiver, content, isSuccess);
+  }
 
-    public void sendTplEmail(String tplCode, String from, String to, String cc, String title, Map<String, Object> dataMap) {
-        MessageTemplate messageTemplate = messagetemplateRepository.findByCode(tplCode);
-        String content = getContent(messageTemplate.getContent(), dataMap);
-        sendEmailMessage(tplCode, from, to, cc, title, content, messageTemplate, null, null);
+  private void sendEmailMessage(String tplCode, String from, String to, String cc, String title,
+                                String content, MessageTemplate messageTemplate,
+                                String attachmentFilename, InputStreamSource inputStreamSource) {
+    try {
+      EmailSender emailSender = getEmailSender(messageTemplate);
+      boolean isSuccess = false;
+      if (inputStreamSource != null) {
+        isSuccess = emailSender.sendEmail(from, to, cc, title, content, attachmentFilename, inputStreamSource);
+      } else {
+        isSuccess = emailSender.sendEmail(from, to, cc, title, content);
+      }
+      saveMessage(1, tplCode, to, content, isSuccess);
+    } catch (Exception e) {
+      logger.error(e.getMessage(), e);
+      saveMessage(1, tplCode, to, content, false);
     }
+  }
 
-    public void sendTplEmail(String tplCode, String from, String to, String cc, String title,
-                             String attachmentFilename, InputStreamSource inputStreamSource,
-                             Map<String, Object> dataMap) {
-        MessageTemplate messageTemplate = messagetemplateRepository.findByCode(tplCode);
-        String content = getContent(messageTemplate.getContent(), dataMap);
-        sendEmailMessage(tplCode, from, to, cc, title, content, messageTemplate, attachmentFilename, inputStreamSource);
+  private String getContent(String template, String... args) {
+    List<Object> argList = new ArrayList<>();
+    argList.add("");
+    if (args != null) {
+      Collections.addAll(argList, args);
     }
+    String content = MessageFormat.format(template, Lang.collection2array(argList));
+    return content;
+  }
 
-    public void sendSimpleEmail(String tplCode, String from, String to, String cc, String title, String... args) {
-        MessageTemplate messageTemplate = messagetemplateRepository.findByCode(tplCode);
-        String content = getContent(messageTemplate.getContent(), args);
-        sendEmailMessage(tplCode, from, to, cc, title, content, messageTemplate, null, null);
-    }
+  private String getContent(String template, Map<String, Object> dataMap) {
+    return StrSubstitutor.replace(template, dataMap);
+  }
 
-    public void sendSms(String tplCode, String receiver, String... args) {
-        MessageTemplate messageTemplate = messagetemplateRepository.findByCode(tplCode);
-        String content = getContent(messageTemplate.getContent(), args);
-        boolean isSuccess = false;
-        try {
-            isSuccess = this.sendSmsMessage(receiver, content, messageTemplate, args);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+  private void saveMessage(Integer type, String tplCode, String receiver, String content, Boolean sendResult) {
+    Message message = new Message();
+    message.setType(type);
+    message.setTplCode(tplCode);
+    message.setType(0);
+    message.setState(sendResult ? 1 : 2);
+    message.setReceiver(receiver);
+    message.setContent(content);
+    messageRepository.save(message);
+
+  }
+
+
+  private boolean sendSmsMessage(String receiver, String content, MessageTemplate messageTemplate, String... args) throws Exception {
+    String tplCode = getTpl(messageTemplate);
+    SmsSender smsSender = getSmsSender(messageTemplate);
+
+    boolean success = false;
+    String[] receivers = receiver.split(",|;", -1);
+    for (String oneReceiver : receivers) {
+      try {
+
+        if (StringUtil.isNotEmpty(oneReceiver)) {
+          success = smsSender.sendSms(tplCode, oneReceiver, args, content);
         }
-        saveMessage(0, tplCode, receiver, content, isSuccess);
+      } catch (Exception e) {
+        logger.error(e.getMessage(), e);
+      }
     }
 
-    private void sendEmailMessage(String tplCode, String from, String to, String cc, String title,
-                                  String content, MessageTemplate messageTemplate,
-                                  String attachmentFilename, InputStreamSource inputStreamSource) {
-        try {
-            EmailSender emailSender = getEmailSender(messageTemplate);
-            boolean isSuccess = false;
-            if (inputStreamSource != null) {
-                isSuccess = emailSender.sendEmail(from, to, cc, title, content, attachmentFilename, inputStreamSource);
-            } else {
-                isSuccess = emailSender.sendEmail(from, to, cc, title, content);
-            }
-            saveMessage(1, tplCode, to, content, isSuccess);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            saveMessage(1, tplCode, to, content, false);
-        }
+    return success;
+  }
+
+  private SmsSender getSmsSender(MessageTemplate messageTemplate) throws Exception {
+    MessageSender messageSender = messagesenderRepository.findById(messageTemplate.getIdMessageSender()).get();
+    if (messageSender != null) {
+      try {
+        return SpringContextHolder.getBean(messageSender.getClassName());
+      } catch (Exception e) {
+        logger.error("获取SmsService实现类失败", e);
+        throw new Exception("smsService名称配置失败:" + messageSender.getClassName());
+      }
+    } else {
+      throw new Exception("未配置运营商模版id");
     }
+  }
 
-    private String getContent(String template, String... args) {
-        List<Object> argList = new ArrayList<>();
-        argList.add("");
-        if (args != null) {
-            Collections.addAll(argList, args);
-        }
-        String content = MessageFormat.format(template, Lang.collection2array(argList));
-        return content;
+  private EmailSender getEmailSender(MessageTemplate messageTemplate) throws Exception {
+    MessageSender messageSender = messagesenderRepository.findById(messageTemplate.getIdMessageSender()).get();
+    if (messageSender != null) {
+      try {
+        return SpringContextHolder.getBean(messageSender.getClassName());
+      } catch (Exception e) {
+        logger.error("获取SmsService实现类失败", e);
+        throw new Exception("smsService名称配置失败:" + messageSender.getClassName());
+      }
+    } else {
+      throw new Exception("未配置运营商模版id");
     }
+  }
 
-    private String getContent(String template, Map<String, Object> dataMap) {
-        return StrSubstitutor.replace(template, dataMap);
+  private String getTpl(MessageTemplate messageTemplate) {
+    MessageSender messageSender = messagesenderRepository.findById(messageTemplate.getIdMessageSender()).get();
+
+    if (messageSender != null && StringUtil.isNotEmpty(messageSender.getTplCode())) {
+      return messageSender.getTplCode();
+    } else {
+      return null;
     }
+  }
 
-    private void saveMessage(Integer type, String tplCode, String receiver, String content, Boolean sendResult) {
-        Message message = new Message();
-        message.setType(type);
-        message.setTplCode(tplCode);
-        message.setType(0);
-        message.setState(sendResult ? 1 : 2);
-        message.setReceiver(receiver);
-        message.setContent(content);
-        messageRepository.save(message);
+  public Logger getLogger() {
+    return logger;
+  }
 
-    }
+  public void setLogger(Logger logger) {
+    this.logger = logger;
+  }
 
+  public MessageRepository getMessageRepository() {
+    return messageRepository;
+  }
 
-    private boolean sendSmsMessage(String receiver, String content, MessageTemplate messageTemplate, String... args) throws Exception {
-        String tplCode = getTpl(messageTemplate);
-        SmsSender smsSender = getSmsSender(messageTemplate);
+  public void setMessageRepository(MessageRepository messageRepository) {
+    this.messageRepository = messageRepository;
+  }
 
-        boolean success = false;
-        String[] receivers = receiver.split(",|;", -1);
-        for (String oneReceiver : receivers) {
-            try {
+  public MessagesenderRepository getMessagesenderRepository() {
+    return messagesenderRepository;
+  }
 
-                if (StringUtil.isNotEmpty(oneReceiver)) {
-                    success = smsSender.sendSms(tplCode, oneReceiver, args, content);
-                }
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
+  public void setMessagesenderRepository(MessagesenderRepository messagesenderRepository) {
+    this.messagesenderRepository = messagesenderRepository;
+  }
 
-        return success;
-    }
+  public MessagetemplateRepository getMessagetemplateRepository() {
+    return messagetemplateRepository;
+  }
 
-    private SmsSender getSmsSender(MessageTemplate messageTemplate) throws Exception {
-        MessageSender messageSender = messagesenderRepository.findById(messageTemplate.getIdMessageSender()).get();
-        if (messageSender != null) {
-            try {
-                return SpringContextHolder.getBean(messageSender.getClassName());
-            } catch (Exception e) {
-                logger.error("获取SmsService实现类失败", e);
-                throw new Exception("smsService名称配置失败:" + messageSender.getClassName());
-            }
-        } else {
-            throw new Exception("未配置运营商模版id");
-        }
-    }
-
-    private EmailSender getEmailSender(MessageTemplate messageTemplate) throws Exception {
-        MessageSender messageSender = messagesenderRepository.findById(messageTemplate.getIdMessageSender()).get();
-        if (messageSender != null) {
-            try {
-                return SpringContextHolder.getBean(messageSender.getClassName());
-            } catch (Exception e) {
-                logger.error("获取SmsService实现类失败", e);
-                throw new Exception("smsService名称配置失败:" + messageSender.getClassName());
-            }
-        } else {
-            throw new Exception("未配置运营商模版id");
-        }
-    }
-
-    private String getTpl(MessageTemplate messageTemplate) {
-        MessageSender messageSender = messagesenderRepository.findById(messageTemplate.getIdMessageSender()).get();
-
-        if (messageSender != null && StringUtil.isNotEmpty(messageSender.getTplCode())) {
-            return messageSender.getTplCode();
-        } else {
-            return null;
-        }
-    }
+  public void setMessagetemplateRepository(MessagetemplateRepository messagetemplateRepository) {
+    this.messagetemplateRepository = messagetemplateRepository;
+  }
 }

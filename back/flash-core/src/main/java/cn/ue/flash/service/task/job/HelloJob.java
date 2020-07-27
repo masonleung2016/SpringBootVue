@@ -22,15 +22,31 @@ import java.util.Map;
 
 @Component
 public class HelloJob extends AbstractJobExecuter {
-    private Logger logger = LoggerFactory.getLogger(getClass());
-    @Autowired
-    private CfgService cfgService;
+  private Logger logger = LoggerFactory.getLogger(getClass());
+  @Autowired
+  private CfgService cfgService;
 
-    @Override
-    public void execute(Map<String, Object> dataMap) throws Exception {
-        Cfg cfg = cfgService.get(1L);
-        cfg.setCfgDesc("update by " + DateUtil.getTime());
-        cfgService.update(cfg);
-        logger.info("hello :" + JsonUtil.toJson(dataMap));
-    }
+  @Override
+  public void execute(Map<String, Object> dataMap) throws Exception {
+    Cfg cfg = cfgService.get(1L);
+    cfg.setCfgDesc("update by " + DateUtil.getTime());
+    cfgService.update(cfg);
+    logger.info("hello :" + JsonUtil.toJson(dataMap));
+  }
+
+  public Logger getLogger() {
+    return logger;
+  }
+
+  public void setLogger(Logger logger) {
+    this.logger = logger;
+  }
+
+  public CfgService getCfgService() {
+    return cfgService;
+  }
+
+  public void setCfgService(CfgService cfgService) {
+    this.cfgService = cfgService;
+  }
 }

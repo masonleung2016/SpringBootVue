@@ -19,8 +19,23 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class BoyService extends BaseService<Boy, Long, BoyRepository> {
-    private Logger logger = LoggerFactory.getLogger(getClass());
-    @Autowired
-    private BoyRepository boyRepository;
+  private Logger logger = LoggerFactory.getLogger(getClass());
+  @Autowired
+  private BoyRepository boyRepository;
 
+  public Logger getLogger() {
+    return logger;
+  }
+
+  public void setLogger(Logger logger) {
+    this.logger = logger;
+  }
+
+  public BoyRepository getBoyRepository() {
+    return boyRepository;
+  }
+
+  public void setBoyRepository(BoyRepository boyRepository) {
+    this.boyRepository = boyRepository;
+  }
 }

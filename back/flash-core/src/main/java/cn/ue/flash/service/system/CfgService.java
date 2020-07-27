@@ -19,23 +19,30 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class CfgService extends BaseService<Cfg, Long, CfgRepository> {
-    @Autowired
-    private ConfigCache configCache;
+  @Autowired
+  private ConfigCache configCache;
 
-    public Cfg saveOrUpdate(Cfg cfg) {
-        if (cfg.getId() == null) {
-            insert(cfg);
-        } else {
-            update(cfg);
-        }
-        configCache.cache();
-        return cfg;
+  public Cfg saveOrUpdate(Cfg cfg) {
+    if (cfg.getId() == null) {
+      insert(cfg);
+    } else {
+      update(cfg);
     }
+    configCache.cache();
+    return cfg;
+  }
 
-    @Override
-    public void delete(Long id) {
-        super.delete(id);
-        configCache.cache();
-    }
+  @Override
+  public void delete(Long id) {
+    super.delete(id);
+    configCache.cache();
+  }
 
+  public ConfigCache getConfigCache() {
+    return configCache;
+  }
+
+  public void setConfigCache(ConfigCache configCache) {
+    this.configCache = configCache;
+  }
 }

@@ -22,24 +22,47 @@ import java.util.List;
 
 @Service
 public class MessagesenderService extends BaseService<MessageSender, Long, MessagesenderRepository> {
-    private Logger logger = LoggerFactory.getLogger(getClass());
-    @Autowired
-    private MessagesenderRepository messageSenderRepository;
-    @Autowired
-    private MessagetemplateRepository messagetemplateRepository;
+  private Logger logger = LoggerFactory.getLogger(getClass());
+  @Autowired
+  private MessagesenderRepository messageSenderRepository;
+  @Autowired
+  private MessagetemplateRepository messagetemplateRepository;
 
-    public void save(MessageSender messageSender) {
-        messageSenderRepository.save(messageSender);
+  public void save(MessageSender messageSender) {
+    messageSenderRepository.save(messageSender);
+  }
+
+  @Override
+  public void delete(Long id) {
+    List<MessageTemplate> templateList = messagetemplateRepository.findByIdMessageSender(id);
+    if (templateList.isEmpty()) {
+      messageSenderRepository.deleteById(id);
+    } else {
+      throw new RuntimeException("有模板使用该发送器，无法删除");
     }
+  }
 
-    @Override
-    public void delete(Long id) {
-        List<MessageTemplate> templateList = messagetemplateRepository.findByIdMessageSender(id);
-        if (templateList.isEmpty()) {
-            messageSenderRepository.deleteById(id);
-        } else {
-            throw new RuntimeException("有模板使用该发送器，无法删除");
-        }
-    }
+  public Logger getLogger() {
+    return logger;
+  }
 
+  public void setLogger(Logger logger) {
+    this.logger = logger;
+  }
+
+  public MessagesenderRepository getMessageSenderRepository() {
+    return messageSenderRepository;
+  }
+
+  public void setMessageSenderRepository(MessagesenderRepository messageSenderRepository) {
+    this.messageSenderRepository = messageSenderRepository;
+  }
+
+  public MessagetemplateRepository getMessagetemplateRepository() {
+    return messagetemplateRepository;
+  }
+
+  public void setMessagetemplateRepository(MessagetemplateRepository messagetemplateRepository) {
+    this.messagetemplateRepository = messagetemplateRepository;
+  }
 }

@@ -18,10 +18,18 @@ import java.util.List;
 
 @Service
 public class NoticeService extends BaseService<Notice, Long, NoticeRepository> {
-    @Autowired
-    private NoticeRepository noticeRepository;
+  @Autowired
+  private NoticeRepository noticeRepository;
 
-    public List<Notice> findByTitleLike(String title) {
-        return noticeRepository.findByTitleLike("%" + title + "%");
-    }
+  public List<Notice> findByTitleLike(String title) {
+    return noticeRepository.findByTitleLike("%" + title + "%");
+  }
+
+  public NoticeRepository getNoticeRepository() {
+    return noticeRepository;
+  }
+
+  public void setNoticeRepository(NoticeRepository noticeRepository) {
+    this.noticeRepository = noticeRepository;
+  }
 }
