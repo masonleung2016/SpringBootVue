@@ -31,51 +31,51 @@ import java.util.List;
 @RestController
 @RequestMapping("/dept")
 public class DeptContoller extends BaseController {
-    private Logger logger = LoggerFactory.getLogger(MenuController.class);
+  private Logger logger = LoggerFactory.getLogger(MenuController.class);
 
-    @Autowired
-    private DeptService deptService;
+  @Autowired
+  private DeptService deptService;
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @RequiresPermissions(value = {Permission.DEPT})
-    public Object list() {
-        List<DeptNode> list = deptService.queryAllNode();
-        return Rets.success(list);
+  @RequestMapping(value = "/list", method = RequestMethod.GET)
+  @RequiresPermissions(value = {Permission.DEPT})
+  public Object list() {
+    List<DeptNode> list = deptService.queryAllNode();
+    return Rets.success(list);
+  }
+
+  @RequestMapping(method = RequestMethod.POST)
+  @BussinessLog(value = "编辑部门", key = "simplename")
+  @RequiresPermissions(value = {Permission.DEPT_EDIT})
+  public Object save(@ModelAttribute @Valid Dept dept) {
+    if (BeanUtil.isOneEmpty(dept, dept.getSimplename())) {
+      throw new ApplicationException(BizExceptionEnum.REQUEST_NULL);
     }
-
-    @RequestMapping(method = RequestMethod.POST)
-    @BussinessLog(value = "编辑部门", key = "simplename")
-    @RequiresPermissions(value = {Permission.DEPT_EDIT})
-    public Object save(@ModelAttribute @Valid Dept dept) {
-        if (BeanUtil.isOneEmpty(dept, dept.getSimplename())) {
-            throw new ApplicationException(BizExceptionEnum.REQUEST_NULL);
-        }
-        if (dept.getId() != null) {
-            Dept old = deptService.get(dept.getId());
-            LogObjectHolder.me().set(old);
-            old.setPid(dept.getPid());
-            old.setSimplename(dept.getSimplename());
-            old.setFullname(dept.getFullname());
-            old.setNum(dept.getNum());
-            old.setTips(dept.getTips());
-            deptService.deptSetPids(old);
-            deptService.update(old);
-        } else {
-            deptService.deptSetPids(dept);
-            deptService.insert(dept);
-        }
-        return Rets.success();
+    if (dept.getId() != null) {
+      Dept old = deptService.get(dept.getId());
+      LogObjectHolder.me().set(old);
+      old.setPid(dept.getPid());
+      old.setSimplename(dept.getSimplename());
+      old.setFullname(dept.getFullname());
+      old.setNum(dept.getNum());
+      old.setTips(dept.getTips());
+      deptService.deptSetPids(old);
+      deptService.update(old);
+    } else {
+      deptService.deptSetPids(dept);
+      deptService.insert(dept);
     }
+    return Rets.success();
+  }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    @BussinessLog(value = "删除部门", key = "id")
-    @RequiresPermissions(value = {Permission.DEPT_DEL})
-    public Object remove(@RequestParam Long id) {
-        logger.info("id:{}", id);
-        if (id == null) {
-            throw new ApplicationException(BizExceptionEnum.REQUEST_NULL);
-        }
-        deptService.deleteDept(id);
-        return Rets.success();
+  @RequestMapping(method = RequestMethod.DELETE)
+  @BussinessLog(value = "删除部门", key = "id")
+  @RequiresPermissions(value = {Permission.DEPT_DEL})
+  public Object remove(@RequestParam Long id) {
+    logger.info("id:{}", id);
+    if (id == null) {
+      throw new ApplicationException(BizExceptionEnum.REQUEST_NULL);
     }
+    deptService.deleteDept(id);
+    return Rets.success();
+  }
 }
