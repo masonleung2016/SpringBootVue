@@ -28,30 +28,30 @@ import java.util.List;
 @Configuration
 @EnableSwagger2
 public class Swagger2Configuration {
-    @Bean
-    public Docket createRestApi() {
-        /**添加head参数start*/
-        ParameterBuilder tokenPar = new ParameterBuilder();
-        List<Parameter> pars = new ArrayList<Parameter>();
-        tokenPar.name("Authorization").description("Token").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
-        pars.add(tokenPar.build());
-        /**添加head参数end*/
+  @Bean
+  public Docket createRestApi() {
+    /**添加head参数start*/
+    ParameterBuilder tokenPar = new ParameterBuilder();
+    List<Parameter> pars = new ArrayList<Parameter>();
+    tokenPar.name("Authorization").description("Token").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
+    pars.add(tokenPar.build());
+    /**添加head参数end*/
 
-        return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("cn.ue.flash.api.controller"))
-                .paths(PathSelectors.any())
-                .build().globalOperationParameters(pars);
-    }
+    return new Docket(DocumentationType.SWAGGER_2)
+        .apiInfo(apiInfo())
+        .select()
+        .apis(RequestHandlerSelectors.basePackage("cn.ue.flash.api.controller"))
+        .paths(PathSelectors.any())
+        .build().globalOperationParameters(pars);
+  }
 
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-                .title("web-flash api")
-                .description("快速构建web管理平台")
-                .termsOfServiceUrl("blog.enilu.cn")
-                .contact("blog.enilu.cn")
-                .version("1.0")
-                .build();
-    }
+  private ApiInfo apiInfo() {
+    return new ApiInfoBuilder()
+        .title("web-flash api")
+        .description("快速构建web管理平台")
+        .termsOfServiceUrl("blog.enilu.cn")
+        .contact("blog.enilu.cn")
+        .version("1.0")
+        .build();
+  }
 }
