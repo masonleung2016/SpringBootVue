@@ -12,26 +12,33 @@ import java.util.List;
 
 public class SlConnectException extends Exception {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private String errorCode;
-    private List<String> details;
+  private String errorCode;
+  private List<String> details;
 
-    public SlConnectException(String errorCode, String errorMessage) {
-        super(errorMessage);
-        this.errorCode = errorCode;
-    }
+  public SlConnectException(String errorCode, String errorMessage) {
+    super(errorMessage);
+    this.errorCode = errorCode;
+  }
 
-    public String getErrorCode() {
-        return errorCode;
-    }
+  public static long getSerialVersionUID() {
+    return serialVersionUID;
+  }
 
-    public List<String> getDetails() {
-        return details;
-    }
+  public String getErrorCode() {
+    return errorCode;
+  }
 
-    public void setDetails(List<String> details) {
-        this.details = details;
-    }
+  public void setErrorCode(String errorCode) {
+    this.errorCode = errorCode;
+  }
 
+  public List<String> getDetails() {
+    return details;
+  }
+
+  public void setDetails(List<String> details) {
+    this.details = details;
+  }
 }
