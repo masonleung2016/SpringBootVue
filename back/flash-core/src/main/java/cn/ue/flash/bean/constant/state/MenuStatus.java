@@ -10,43 +10,43 @@ package cn.ue.flash.bean.constant.state;
 
 public enum MenuStatus {
 
-    ENABLE(1, "启用"),
-    DISABLE(0, "禁用");
+  ENABLE(1, "启用"),
+  DISABLE(0, "禁用");
 
-    int code;
-    String message;
+  int code;
+  String message;
 
-    MenuStatus(int code, String message) {
-        this.code = code;
-        this.message = message;
-    }
+  MenuStatus(int code, String message) {
+    this.code = code;
+    this.message = message;
+  }
 
-    public static String valueOf(Integer status) {
-        if (status == null) {
-            return "";
-        } else {
-            for (MenuStatus s : MenuStatus.values()) {
-                if (s.getCode() == status) {
-                    return s.getMessage();
-                }
-            }
-            return "";
+  public static String valueOf(Integer status) {
+    if (status == null) {
+      return "";
+    } else {
+      for (MenuStatus s : MenuStatus.values()) {
+        if (s.getCode() == status) {
+          return s.getMessage();
         }
+      }
+      return "";
     }
+  }
 
-    public int getCode() {
-        return code;
-    }
+  public int getCode() {
+    return code;
+  }
 
-    public void setCode(int code) {
-        this.code = code;
-    }
+  public void setCode(int code) {
+    this.code = code;
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  public String getMessage() {
+    return message;
+  }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+  public void setMessage(String message) {
+    this.message = message;
+  }
 }

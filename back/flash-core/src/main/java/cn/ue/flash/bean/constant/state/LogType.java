@@ -10,23 +10,23 @@ package cn.ue.flash.bean.constant.state;
 
 public enum LogType {
 
-    BUSSINESS("业务日志"),
-    EXCEPTION("异常日志"),
-    EXIT("退出日志"),
-    LOGIN("登录日志"),
-    LOGIN_FAIL("登录失败日志");
+  BUSSINESS("业务日志"),
+  EXCEPTION("异常日志"),
+  EXIT("退出日志"),
+  LOGIN("登录日志"),
+  LOGIN_FAIL("登录失败日志");
 
-    String message;
+  String message;
 
-    LogType(String message) {
-        this.message = message;
-    }
+  LogType(String message) {
+    this.message = message;
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  public String getMessage() {
+    return message;
+  }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+  public void setMessage(String message) {
+    this.message = message;
+  }
 }
