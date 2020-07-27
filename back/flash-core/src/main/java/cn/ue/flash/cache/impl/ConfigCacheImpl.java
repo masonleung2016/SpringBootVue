@@ -24,64 +24,83 @@ import java.util.List;
 
 @Service
 public class ConfigCacheImpl extends BaseCache implements ConfigCache {
-    private static final Logger logger = LoggerFactory.getLogger(ConfigCacheImpl.class);
-    @Autowired
-    private CfgRepository cfgRepository;
-    @Autowired
-    private CacheDao cacheDao;
+  private static final Logger logger = LoggerFactory.getLogger(ConfigCacheImpl.class);
+  @Autowired
+  private CfgRepository cfgRepository;
+  @Autowired
+  private CacheDao cacheDao;
 
-    @Override
-    public Object get(String key) {
-        return cacheDao.hget(CacheDao.CONSTANT, key);
+  public static Logger getLogger() {
+    return logger;
+  }
+
+  @Override
+  public Object get(String key) {
+    return cacheDao.hget(CacheDao.CONSTANT, key);
+  }
+
+  @Override
+  public String get(String key, boolean local) {
+    String ret = null;
+    if (local) {
+      ret = (String) get(key);
+    } else {
+      ret = (String) cfgRepository.findByCfgName(key).getCfgValue();
+      set(key, ret);
     }
+    return ret;
+  }
 
-    @Override
-    public String get(String key, boolean local) {
-        String ret = null;
-        if (local) {
-            ret = (String) get(key);
-        } else {
-            ret = (String) cfgRepository.findByCfgName(key).getCfgValue();
-            set(key, ret);
+  @Override
+  public String get(String key, String def) {
+    String ret = (String) get(key);
+    if (StringUtil.isEmpty(ret)) {
+      return ret;
+    }
+    return ret;
+  }
+
+  @Override
+  public String get(ConfigKeyEnum configKeyEnum) {
+    return get(configKeyEnum.getValue(), null);
+  }
+
+  @Override
+  public void set(String key, Object val) {
+    cacheDao.hset(CacheDao.CONSTANT, key, val);
+  }
+
+  @Override
+  public void del(String key, String val) {
+    cacheDao.hdel(CacheDao.CONSTANT, val);
+  }
+
+  @Override
+  public void cache() {
+    super.cache();
+    List<Cfg> list = cfgRepository.findAll();
+    if (list != null && !list.isEmpty()) {
+      for (Cfg cfg : list) {
+        if (StringUtil.isNotEmpty((String) cfg.getCfgName()) && StringUtil.isNotEmpty((String) cfg.getCfgValue())) {
+          set((String) cfg.getCfgName(), cfg.getCfgValue());
         }
-        return ret;
+      }
     }
+  }
 
-    @Override
-    public String get(String key, String def) {
-        String ret = (String) get(key);
-        if (StringUtil.isEmpty(ret)) {
-            return ret;
-        }
-        return ret;
-    }
+  public CfgRepository getCfgRepository() {
+    return cfgRepository;
+  }
 
-    @Override
-    public String get(ConfigKeyEnum configKeyEnum) {
-        return get(configKeyEnum.getValue(), null);
-    }
+  public void setCfgRepository(CfgRepository cfgRepository) {
+    this.cfgRepository = cfgRepository;
+  }
 
+  public CacheDao getCacheDao() {
+    return cacheDao;
+  }
 
-    @Override
-    public void set(String key, Object val) {
-        cacheDao.hset(CacheDao.CONSTANT, key, val);
-    }
-
-    @Override
-    public void del(String key, String val) {
-        cacheDao.hdel(CacheDao.CONSTANT, val);
-    }
-
-    @Override
-    public void cache() {
-        super.cache();
-        List<Cfg> list = cfgRepository.findAll();
-        if (list != null && !list.isEmpty()) {
-            for (Cfg cfg : list) {
-                if (StringUtil.isNotEmpty((String) cfg.getCfgName()) && StringUtil.isNotEmpty((String) cfg.getCfgValue())) {
-                    set((String) cfg.getCfgName(), cfg.getCfgValue());
-                }
-            }
-        }
-    }
+  public void setCacheDao(CacheDao cacheDao) {
+    this.cacheDao = cacheDao;
+  }
 }

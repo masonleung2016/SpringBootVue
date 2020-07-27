@@ -21,48 +21,64 @@ import java.util.List;
 
 @Component
 public class DictCacheImpl extends BaseCache implements DictCache {
-    @Autowired
-    private DictRepository dictRepository;
-    @Autowired
-    private CacheDao cacheDao;
+  @Autowired
+  private DictRepository dictRepository;
+  @Autowired
+  private CacheDao cacheDao;
 
-    @Override
-    public List<Dict> getDictsByPname(String dictName) {
-        return (List<Dict>) cacheDao.hget(CacheDao.CONSTANT, CacheKey.DICT + dictName, List.class);
-    }
+  @Override
+  public List<Dict> getDictsByPname(String dictName) {
+    return (List<Dict>) cacheDao.hget(CacheDao.CONSTANT, CacheKey.DICT + dictName, List.class);
+  }
 
-    @Override
-    public String getDict(Long dictId) {
-        return (String) get(CacheKey.DICT_NAME + dictId);
-    }
+  @Override
+  public String getDict(Long dictId) {
+    return (String) get(CacheKey.DICT_NAME + dictId);
+  }
 
-    @Override
-    public void cache() {
-        super.cache();
-        List<Dict> list = dictRepository.findByPid(0L);
-        for (Dict dict : list) {
-            List<Dict> children = dictRepository.findByPid(dict.getId());
-            if (children.isEmpty()) {
-                continue;
-            }
-            set(String.valueOf(dict.getId()), children);
-            set((String) dict.getName(), children);
-            for (Dict child : children) {
-                set(CacheKey.DICT_NAME + child.getId(), child.getName());
-            }
-
-        }
+  @Override
+  public void cache() {
+    super.cache();
+    List<Dict> list = dictRepository.findByPid(0L);
+    for (Dict dict : list) {
+      List<Dict> children = dictRepository.findByPid(dict.getId());
+      if (children.isEmpty()) {
+        continue;
+      }
+      set(String.valueOf(dict.getId()), children);
+      set((String) dict.getName(), children);
+      for (Dict child : children) {
+        set(CacheKey.DICT_NAME + child.getId(), child.getName());
+      }
 
     }
 
-    @Override
-    public Object get(String key) {
-        return cacheDao.hget(CacheDao.CONSTANT, CacheKey.DICT + key);
-    }
+  }
 
-    @Override
-    public void set(String key, Object val) {
-        cacheDao.hset(CacheDao.CONSTANT, CacheKey.DICT + key, val);
+  @Override
+  public Object get(String key) {
+    return cacheDao.hget(CacheDao.CONSTANT, CacheKey.DICT + key);
+  }
 
-    }
+  @Override
+  public void set(String key, Object val) {
+    cacheDao.hset(CacheDao.CONSTANT, CacheKey.DICT + key, val);
+
+  }
+
+  public DictRepository getDictRepository() {
+    return dictRepository;
+  }
+
+  public void setDictRepository(DictRepository dictRepository) {
+    this.dictRepository = dictRepository;
+  }
+
+  public CacheDao getCacheDao() {
+    return cacheDao;
+  }
+
+  public void setCacheDao(CacheDao cacheDao) {
+    this.cacheDao = cacheDao;
+  }
 }
