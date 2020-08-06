@@ -27,7 +27,6 @@ import java.util.Map;
  * @Version 1.0
  */
 
-
 @Configuration
 public class ShiroConfig {
   @Bean("securityManager")
@@ -77,11 +76,9 @@ public class ShiroConfig {
     filterRuleMap.put("/images/**", "anon");
     filterRuleMap.put("/configuration/security", "anon");
     filterRuleMap.put("/configuration/ui", "anon");
-
     filterRuleMap.put("/file/download", "anon");
     filterRuleMap.put("/file/getImgStream", "anon");
     filterRuleMap.put("/file/getImgBase64", "anon");
-
 
     //druid监控地址不拦截
     filterRuleMap.put("/druid/**", "anon");
