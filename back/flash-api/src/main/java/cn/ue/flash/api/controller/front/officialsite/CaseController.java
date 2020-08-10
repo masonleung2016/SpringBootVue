@@ -10,6 +10,7 @@ import cn.ue.flash.bean.vo.offcialsite.Product;
 import cn.ue.flash.service.cms.ArticleService;
 import cn.ue.flash.service.cms.BannerService;
 import cn.ue.flash.utils.factory.Page;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
