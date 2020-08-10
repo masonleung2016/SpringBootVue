@@ -4,6 +4,7 @@ import cn.ue.flash.security.JwtUtil;
 import cn.ue.flash.utils.Constants;
 import cn.ue.flash.utils.HttpUtil;
 import cn.ue.flash.utils.StringUtil;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 
