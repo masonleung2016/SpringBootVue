@@ -7,6 +7,7 @@ import cn.ue.flash.bean.enumeration.Permission;
 import cn.ue.flash.bean.vo.front.Rets;
 import cn.ue.flash.service.message.MessagesenderService;
 import cn.ue.flash.utils.factory.Page;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
