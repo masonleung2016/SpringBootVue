@@ -12,6 +12,7 @@ import cn.ue.flash.service.system.DictService;
 import cn.ue.flash.utils.BeanUtil;
 import cn.ue.flash.utils.StringUtil;
 import cn.ue.flash.warpper.DictWarpper;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
