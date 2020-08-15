@@ -11,6 +11,7 @@ import cn.ue.flash.bean.vo.node.DeptNode;
 import cn.ue.flash.service.system.DeptService;
 import cn.ue.flash.service.system.LogObjectHolder;
 import cn.ue.flash.utils.BeanUtil;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
