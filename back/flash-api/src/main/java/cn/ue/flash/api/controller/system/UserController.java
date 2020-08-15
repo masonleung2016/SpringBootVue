@@ -19,6 +19,7 @@ import cn.ue.flash.utils.MD5;
 import cn.ue.flash.utils.RandomUtil;
 import cn.ue.flash.utils.factory.Page;
 import cn.ue.flash.warpper.UserWarpper;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
