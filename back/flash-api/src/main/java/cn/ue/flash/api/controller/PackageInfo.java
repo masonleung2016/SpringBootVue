@@ -9,4 +9,5 @@ package cn.ue.flash.api.controller;
  */
 
 public class PackageInfo {
+  
 }
