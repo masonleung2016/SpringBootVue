@@ -29,7 +29,6 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-
   /**
    * 判断用户是否想要登入。
    * 检测header里面是否包含Authorization字段即可
@@ -55,7 +54,6 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
     // 如果没有抛出异常则代表登入成功，返回true
     return true;
   }
-
 
   @Override
   protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
